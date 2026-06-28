@@ -114,7 +114,7 @@ h1,h2,h3,.hub-h1,.lp-title,.lesson-title,.lnd-title,.brand-name,.lnd-brand-name{
 }
 
 /* ═══ LANDING ═══ */
-.landing{min-height:100vh;display:flex;flex-direction:column;overflow-y:auto;position:relative;z-index:1;}
+.landing{height:100vh;height:100dvh;display:flex;flex-direction:column;overflow-y:auto;position:relative;z-index:1;}
 .lnd-wrap{max-width:1140px;width:100%;margin:0 auto;padding:16px clamp(16px,4vw,48px) 80px;}
 .lnd-nav{
   position:sticky;top:14px;z-index:50;
