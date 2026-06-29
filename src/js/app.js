@@ -216,14 +216,15 @@ function togglePlay() { if (fellBack) return; if (!ytPlayer?.playVideo) { markSt
 function seekBy(d) { if (!ytPlayer?.seekTo || fellBack) return; const dur = ytPlayer.getDuration() || 0; let t = (ytPlayer.getCurrentTime()||0) + d; t = Math.max(0, dur ? Math.min(t,dur) : t); ytPlayer.seekTo(t,true); setProgressUI(dur?(t/dur)*100:0); $('vpCurrent').textContent = fmtTime(t); showUI(); scheduleHide(); }
 function toggleMute() { if (!ytPlayer || fellBack) return; if (isMutedState) { isMutedState = false; const r = lastVol > 0 ? lastVol : 100; try { ytPlayer.unMute(); ytPlayer.setVolume(r); } catch {} setVolume(r); } else { try { const c = ytPlayer.getVolume() ?? 100; if (c > 0) lastVol = c; ytPlayer.mute(); } catch {} isMutedState = true; } applyVol(); }
 function setVolX(r) { const v = Math.round(Math.max(0, Math.min(1, r)) * 100); if (v > 0) { lastVol = v; isMutedState = false; try { if (ytPlayer && !fellBack) { ytPlayer.setVolume(v); ytPlayer.unMute(); } } catch {} } else { isMutedState = true; try { if (ytPlayer && !fellBack) ytPlayer.mute(); } catch {} } setVolume(v || 0); applyVol(); }
-function toggleFS() { const b = $('videoBox'); if (!b) return; if (!document.fullscreenElement) (b.requestFullscreen||function(){}).call(b); else document.exitFullscreen(); }
+function toggleFS() { const b = $('videoBox'); if (!b) return; const rq = b.requestFullscreen || b.webkitRequestFullscreen || b.mozRequestFullScreen || b.msRequestFullscreen; const ex = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen; if (!document.fullscreenElement) { if (rq) rq.call(b); } else { if (ex) ex.call(document); } }
 
 function bindController() {
   const surface = $('vpSurface'), box = $('videoBox');
   let ct = null;
-  surface.onclick = e => { if (ct) { clearTimeout(ct); ct = null; return; } ct = setTimeout(() => { togglePlay(); ct = null; }, 220); };
+  surface.onclick = e => { if (ct) { clearTimeout(ct); ct = null; return; } showUI(); scheduleHide(); ct = setTimeout(() => { togglePlay(); ct = null; }, 220); };
   surface.ondblclick = e => { if (ct) { clearTimeout(ct); ct = null; } e.preventDefault(); toggleFS(); };
   box.onmousemove = () => { showUI(); scheduleHide(); }; box.onmouseenter = showUI; box.onmouseleave = () => { if (box.classList.contains('playing')) box.classList.add('hide-ui'); };
+  box.addEventListener('touchstart', () => { showUI(); scheduleHide(); }, { passive: true });
   $('vpPlay').onclick = e => { e.stopPropagation(); togglePlay(); };
   $('vpBack10').onclick = e => { e.stopPropagation(); seekBy(-10); };
   $('vpFwd10').onclick = e => { e.stopPropagation(); seekBy(10); };
@@ -235,6 +236,8 @@ function bindController() {
   const qb = $('vpQuality'), qm = $('vpQualityMenu'); if (qb && qm) qb.onclick = e => { e.stopPropagation(); qm.classList.toggle('open'); sm.classList.remove('open'); };
   document.addEventListener('click', e => { if (!e.target.closest('.vp-menu-wrap')) { sm.classList.remove('open'); qm?.classList.remove('open'); } });
   $('vpFs').onclick = e => { e.stopPropagation(); toggleFS(); };
+  const fsEvents = ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'];
+  fsEvents.forEach(ev => document.addEventListener(ev, () => { showUI(); scheduleHide(); }));
   document.onkeydown = e => { if (!ytPlayer || fellBack) return; const tag = (e.target.tagName||'').toLowerCase(); if (tag === 'input' || tag === 'textarea') return;
     switch (e.key) { case ' ': case 'Spacebar': e.preventDefault(); togglePlay(); break; case 'ArrowLeft': e.preventDefault(); seekBy(-10); break; case 'ArrowRight': e.preventDefault(); seekBy(10); break; case 'f': case 'F': e.preventDefault(); toggleFS(); break; case 'm': case 'M': e.preventDefault(); toggleMute(); break; case 'ArrowUp': e.preventDefault(); setVolX(Math.min(100,lastVol+10)/100); break; case 'ArrowDown': e.preventDefault(); setVolX(Math.max(0,lastVol-10)/100); break; }
   };
