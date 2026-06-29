@@ -211,12 +211,36 @@ function buildQuality() { const menu = $('vpQualityMenu'); if (!menu) return; le
 function updateQualityBtn() { const b = $('vpQuality'); if (b) b.innerHTML = `Auto ${svg(ICO.chev,{sw:2})}`; }
 function startLoop() { if (progressTimer) clearInterval(progressTimer); progressTimer = setInterval(() => { if (!ytPlayer || fellBack || scrubbing) return; const c = ytPlayer.getCurrentTime() || 0, d = ytPlayer.getDuration() || 0; setProgressUI(d ? (c/d)*100 : 0); $('vpCurrent').textContent = fmtTime(c); $('vpDuration').textContent = fmtTime(d); $('vpBuffer').style.width = ((ytPlayer.getVideoLoadedFraction?.()||0)*100) + '%'; }, 250); }
 function showUI() { const b = $('videoBox'); if (b) { b.classList.add('show-ui'); b.classList.remove('hide-ui'); } }
-function scheduleHide() { const b = $('videoBox'); if (!b) return; clearTimeout(hideTimer); hideTimer = setTimeout(() => { if (b.classList.contains('playing')) { b.classList.remove('show-ui'); b.classList.add('hide-ui'); } }, 2800); }
+function scheduleHide() { const b = $('videoBox'); if (!b) return; clearTimeout(hideTimer); hideTimer = setTimeout(() => { if (b.classList.contains('playing')) { b.classList.remove('show-ui'); b.classList.add('hide-ui'); } }, 4000); }
 function togglePlay() { if (fellBack) return; if (!ytPlayer?.playVideo) { markStarted(); pendingPlay = true; return; } if (ytPlayer.getPlayerState() === 1) ytPlayer.pauseVideo(); else { markStarted(); ytPlayer.playVideo(); } }
 function seekBy(d) { if (!ytPlayer?.seekTo || fellBack) return; const dur = ytPlayer.getDuration() || 0; let t = (ytPlayer.getCurrentTime()||0) + d; t = Math.max(0, dur ? Math.min(t,dur) : t); ytPlayer.seekTo(t,true); setProgressUI(dur?(t/dur)*100:0); $('vpCurrent').textContent = fmtTime(t); showUI(); scheduleHide(); }
 function toggleMute() { if (!ytPlayer || fellBack) return; if (isMutedState) { isMutedState = false; const r = lastVol > 0 ? lastVol : 100; try { ytPlayer.unMute(); ytPlayer.setVolume(r); } catch {} setVolume(r); } else { try { const c = ytPlayer.getVolume() ?? 100; if (c > 0) lastVol = c; ytPlayer.mute(); } catch {} isMutedState = true; } applyVol(); }
 function setVolX(r) { const v = Math.round(Math.max(0, Math.min(1, r)) * 100); if (v > 0) { lastVol = v; isMutedState = false; try { if (ytPlayer && !fellBack) { ytPlayer.setVolume(v); ytPlayer.unMute(); } } catch {} } else { isMutedState = true; try { if (ytPlayer && !fellBack) ytPlayer.mute(); } catch {} } setVolume(v || 0); applyVol(); }
-function toggleFS() { const b = $('videoBox'); if (!b) return; const rq = b.requestFullscreen || b.webkitRequestFullscreen || b.mozRequestFullScreen || b.msRequestFullscreen; const ex = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen; if (!document.fullscreenElement) { if (rq) rq.call(b); } else { if (ex) ex.call(document); } }
+function toggleFS() {
+  const b = $('videoBox');
+  if (!b) return;
+
+  // iOS Safari: must call webkitEnterFullscreen on the actual <video> element
+  const iframe = b.querySelector('iframe');
+  const videoEl = b.querySelector('video');
+
+  // Check if already fullscreen
+  const isFS = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
+
+  if (isFS) {
+    const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
+    if (exit) exit.call(document);
+    return;
+  }
+
+  // Try container fullscreen first (Android + desktop)
+  const rq = b.requestFullscreen || b.webkitRequestFullscreen || b.mozRequestFullScreen || b.msRequestFullscreen;
+  if (rq) { rq.call(b); return; }
+
+  // iOS Safari fallback: try the iframe, then any video element
+  if (iframe?.webkitRequestFullscreen) { iframe.webkitRequestFullscreen(); return; }
+  if (videoEl?.webkitEnterFullscreen) { videoEl.webkitEnterFullscreen(); return; }
+}
 
 function bindController() {
   const surface = $('vpSurface'), box = $('videoBox');
@@ -224,17 +248,24 @@ function bindController() {
   surface.onclick = e => { if (ct) { clearTimeout(ct); ct = null; return; } showUI(); scheduleHide(); ct = setTimeout(() => { togglePlay(); ct = null; }, 220); };
   surface.ondblclick = e => { if (ct) { clearTimeout(ct); ct = null; } e.preventDefault(); toggleFS(); };
   box.onmousemove = () => { showUI(); scheduleHide(); }; box.onmouseenter = showUI; box.onmouseleave = () => { if (box.classList.contains('playing')) box.classList.add('hide-ui'); };
-  box.addEventListener('touchstart', () => { showUI(); scheduleHide(); }, { passive: true });
+  box.addEventListener('touchstart', () => { showUI(); }, { passive: true });
+  box.addEventListener('touchend', () => { scheduleHide(); }, { passive: true });
   $('vpPlay').onclick = e => { e.stopPropagation(); togglePlay(); };
   $('vpBack10').onclick = e => { e.stopPropagation(); seekBy(-10); };
   $('vpFwd10').onclick = e => { e.stopPropagation(); seekBy(10); };
   $('vpMute').onclick = e => { e.stopPropagation(); toggleMute(); };
-  const vt = $('vpVoltrack'); let drag = false; const apply = x => { const r = vt.getBoundingClientRect(); setVolX((x-r.left)/r.width); }; vt.onpointerdown = e => { drag = true; vt.setPointerCapture(e.pointerId); apply(e.clientX); }; vt.onpointermove = e => { if (drag) apply(e.clientX); }; vt.onpointerup = () => drag = false;
+  const vt = $('vpVoltrack'); let drag = false; const apply = x => { const r = vt.getBoundingClientRect(); setVolX((x-r.left)/r.width); }; vt.onpointerdown = e => { drag = true; vt.setPointerCapture(e.pointerId); apply(e.clientX); }; vt.onpointermove = e => { if (drag) apply(e.clientX); };   vt.onpointerup = () => drag = false;
+  // Make vol bar always visible on mobile (touch devices)
+  if ('ontouchstart' in window) {
+    const volbar = document.querySelector('.vp-volbar');
+    if (volbar) volbar.style.width = '72px';
+  }
   const bar = $('vpProgress'); const rat = x => { const r = bar.getBoundingClientRect(); return Math.max(0, Math.min(1,(x-r.left)/r.width)); }; const prev = x => { pendingRatio = rat(x); setProgressUI(pendingRatio*100); const d = ytPlayer?ytPlayer.getDuration()||0:0; $('vpCurrent').textContent = fmtTime(pendingRatio*d); }; const tip = x => { const r = rat(x), t = $('vpTooltip'), d = ytPlayer?ytPlayer.getDuration()||0:0; if (t) { t.textContent = fmtTime(r*d); t.style.left = r*100+'%'; t.style.opacity = 1; } };
   bar.onpointerdown = e => { scrubbing = true; bar.classList.add('scrubbing'); bar.setPointerCapture(e.pointerId); prev(e.clientX); }; bar.onpointermove = e => { tip(e.clientX); if (scrubbing) prev(e.clientX); }; bar.onpointerup = () => { if (!scrubbing) return; scrubbing = false; bar.classList.remove('scrubbing'); if (ytPlayer && !fellBack) ytPlayer.seekTo(pendingRatio*(ytPlayer.getDuration()||0),true); }; bar.onpointerleave = () => { const t = $('vpTooltip'); if (t) t.style.opacity = 0; };
   const sb = $('vpSpeed'), sm = $('vpSpeedMenu'); sb.onclick = e => { e.stopPropagation(); sm.classList.toggle('open'); };
   const qb = $('vpQuality'), qm = $('vpQualityMenu'); if (qb && qm) qb.onclick = e => { e.stopPropagation(); qm.classList.toggle('open'); sm.classList.remove('open'); };
   document.addEventListener('click', e => { if (!e.target.closest('.vp-menu-wrap')) { sm.classList.remove('open'); qm?.classList.remove('open'); } });
+  document.addEventListener('touchstart', e => { if (!e.target.closest('.vp-menu-wrap')) { sm.classList.remove('open'); qm?.classList.remove('open'); } }, { passive: true });
   $('vpFs').onclick = e => { e.stopPropagation(); toggleFS(); };
   const fsEvents = ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'];
   fsEvents.forEach(ev => document.addEventListener(ev, () => { showUI(); scheduleHide(); }));

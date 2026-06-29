@@ -323,7 +323,7 @@ body.sb-collapsed .subj-btn.active::after{content:'';position:absolute;left:50%;
 .fade{animation:fadeUp .35s var(--ease);}
 
 /* ═══ PLAYER ═══ */
-.video-frame{position:relative;width:100%;border-radius:18px;overflow:hidden;background:#000;border:1px solid var(--glass-border);box-shadow:0 0 0 1px rgba(124,106,248,0.08),0 20px 60px rgba(0,0,0,0.6);aspect-ratio:16/9;max-height:calc(100vh - var(--topbar-h) - 220px);isolation:isolate;animation:scaleIn .4s var(--ease);}
+.video-frame{position:relative;width:100%;border-radius:18px;overflow:hidden;background:#000;border:1px solid var(--glass-border);box-shadow:0 0 0 1px rgba(124,106,248,0.08),0 20px 60px rgba(0,0,0,0.6);aspect-ratio:16/9;max-height: min(calc(100vh - var(--topbar-h) - 120px), 56vw);isolation:isolate;animation:scaleIn .4s var(--ease);}
 .yt-stage{position:absolute;inset:0;z-index:1;overflow:hidden;background:#000;}
 .yt-stage iframe{position:absolute;inset:0;width:100%;height:100%;border:0;pointer-events:none;}
 .vp-poster{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:4;background:#000;transition:opacity .35s var(--ease);}
@@ -377,6 +377,14 @@ body.sb-collapsed .subj-btn.active::after{content:'';position:absolute;left:50%;
 .vp-menu-check{width:14px;height:14px;opacity:0;}
 .vp-menu-item.active .vp-menu-check{opacity:1;}
 .video-frame:fullscreen,.video-frame:-webkit-full-screen{width:100vw!important;height:100vh!important;max-width:none!important;max-height:none!important;aspect-ratio:auto!important;border-radius:0!important;background:#000!important;}
+.video-frame:-webkit-full-screen iframe,
+.video-frame:fullscreen iframe {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 9999 !important;
+}
 
 /* LESSON */
 .vp-back{display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 14px 0 12px;border-radius:10px;background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid var(--glass-border);color:var(--text-2);font-size:12.5px;font-weight:600;margin-bottom:4px;transition:all .2s var(--ease);}
@@ -492,6 +500,8 @@ body.nav-open .backdrop{opacity:1;pointer-events:auto;}
   body.sb-collapsed .subj-btn{gap:11px!important;justify-content:flex-start!important;padding:0 12px!important;}
   body.sb-collapsed .s-chev{display:grid!important;}
   .backdrop{display:block;}.menu-btn{display:grid;}.stage-inner{padding:16px;}
+  /* Always show volume bar on touch/mobile */
+  .vp-volbar { width: 72px !important; }
 }
 @media (max-width:560px){
   .lesson-top{flex-direction:column;}.mark-btn{align-self:flex-start;}.facts{gap:0 16px;}.pager{flex-direction:column;}.pager a.next{text-align:left;}.hub-head{align-items:flex-start;}
@@ -503,6 +513,8 @@ body.nav-open .backdrop{opacity:1;pointer-events:auto;}
   .vp-time{font-size:10px;margin:0 2px 0 4px;}
   .vp-menu-btn{font-size:10.5px;height:28px;padding:0 6px;}
   .vp-menu-btn svg{width:10px;height:10px;}
+  .vp-vol { display: none; }   /* hide volume on tiny screens, use system volume */
+  .vp-controls { padding: 0 6px 8px; }
 }
 @media (max-width:400px){
   /* hide quality menu on very narrow screens — frees 50+ px */
