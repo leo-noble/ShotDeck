@@ -495,4 +495,16 @@ body.nav-open .backdrop{opacity:1;pointer-events:auto;}
 }
 @media (max-width:560px){
   .lesson-top{flex-direction:column;}.mark-btn{align-self:flex-start;}.facts{gap:0 16px;}.pager{flex-direction:column;}.pager a.next{text-align:left;}.hub-head{align-items:flex-start;}
+  /* compact player controls so the fullscreen button fits on phone screens */
+  .vp-controls{padding:0 10px 10px;}
+  .vp-row{padding:4px 4px 0;}
+  .vp-btn{width:30px;height:30px;border-radius:6px;}
+  .vp-btn svg{width:15px;height:15px;}
+  .vp-time{font-size:10px;margin:0 2px 0 4px;}
+  .vp-menu-btn{font-size:10.5px;height:28px;padding:0 6px;}
+  .vp-menu-btn svg{width:10px;height:10px;}
+}
+@media (max-width:400px){
+  /* hide quality menu on very narrow screens — frees 50+ px */
+  #vpQuality,#vpQualityMenu{display:none;}
 }
