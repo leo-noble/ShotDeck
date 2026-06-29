@@ -376,14 +376,79 @@ body.sb-collapsed .subj-btn.active::after{content:'';position:absolute;left:50%;
 .vp-menu-item.active{color:var(--accent);background:var(--accent-06);}
 .vp-menu-check{width:14px;height:14px;opacity:0;}
 .vp-menu-item.active .vp-menu-check{opacity:1;}
-.video-frame:fullscreen,.video-frame:-webkit-full-screen{width:100vw!important;height:100vh!important;max-width:none!important;max-height:none!important;aspect-ratio:auto!important;border-radius:0!important;background:#000!important;}
-.video-frame:-webkit-full-screen iframe,
-.video-frame:fullscreen iframe {
+/* ── FULLSCREEN (native + iOS fallback) ── */
+.video-frame:fullscreen,
+.video-frame:-webkit-full-screen,
+.video-frame:-moz-full-screen,
+.video-frame:-ms-fullscreen {
   position: fixed !important;
   inset: 0 !important;
   width: 100vw !important;
   height: 100vh !important;
+  max-width: none !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+  border-radius: 0 !important;
   z-index: 9999 !important;
+  background: #000 !important;
+}
+
+/* iframe must fill the container whether native fullscreen or not */
+.video-frame:fullscreen iframe,
+.video-frame:-webkit-full-screen iframe,
+.video-frame:-moz-full-screen iframe,
+.video-frame:-ms-fullscreen iframe,
+.yt-stage iframe {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  border: 0 !important;
+}
+
+/* iOS / fallback fullscreen mode */
+.video-frame.fs-fallback {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100dvh !important;
+  max-width: none !important;
+  max-height: none !important;
+  aspect-ratio: auto !important;
+  border-radius: 0 !important;
+  z-index: 9999 !important;
+  background: #000 !important;
+}
+
+/* When fallback fullscreen is active, hide the rest of the app */
+body.fs-fallback-active {
+  overflow: hidden !important;
+}
+body.fs-fallback-active .sidebar,
+body.fs-fallback-active .topbar,
+body.fs-fallback-active .lesson,
+body.fs-fallback-active .lp {
+  display: none !important;
+}
+
+/* Ensure controls work in fullscreen */
+.video-frame:fullscreen .vp-controls,
+.video-frame:-webkit-full-screen .vp-controls,
+.video-frame.fs-fallback .vp-controls {
+  padding: 0 20px 20px;
+}
+
+/* Always show controls when .show-ui is present, even when playing */
+.video-frame.started.playing.hide-ui.show-ui .vp-controls {
+  opacity: 1 !important;
+}
+
+.video-frame.fs-fallback .vp-controls {
+  position: absolute;
+  bottom: env(safe-area-inset-bottom, 0);
+  left: 0;
+  right: 0;
+  padding: 0 20px max(20px, env(safe-area-inset-bottom, 20px));
 }
 
 /* LESSON */

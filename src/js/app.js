@@ -29,7 +29,7 @@ window.route = function route() {
   if (m[2]) return renderChapter(sub.key, m[2]);
   renderSubject(sub.key);
 }
-window.addEventListener('hashchange', () => window.route());
+window.addEventListener('hashchange', () => { cleanupFullscreen(); window.route(); });
 
 /* ─── LANDING ─── */
 function renderLanding() {
@@ -141,9 +141,11 @@ const QLABELS = { auto:'Auto', tiny:'144p', small:'240p', medium:'360p', large:'
 const SKIP_BACK = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><text x="12" y="15.5" font-size="7.5" font-weight="800" fill="currentColor" stroke="none" text-anchor="middle">10</text></svg>`;
 const SKIP_FWD = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/><text x="12" y="15.5" font-size="7.5" font-weight="800" fill="currentColor" stroke="none" text-anchor="middle">10</text></svg>`;
 
-let ytPlayer = null, progressTimer = null, scrubbing = false, pendingRatio = 0, hideTimer = null, pendingPlay = false, lastVol = 100, isMutedState = false, fellBack = false, curVideoId = null, curList = null;
+let ytPlayer = null, progressTimer = null, scrubbing = false, pendingRatio = 0, hideTimer = null, pendingPlay = false, lastVol = 100, isMutedState = false, fellBack = false, curVideoId = null, curList = null, fsFallback = false;
+const isIos = /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const isMobile = isIos || /Android/.test(navigator.userAgent);
 
-function destroyYT() { if (progressTimer) { clearInterval(progressTimer); progressTimer = null; } if (ytPlayer) { try { ytPlayer.destroy(); } catch {} ytPlayer = null; } scrubbing = false; pendingPlay = false; fellBack = false; isMutedState = false; }
+function destroyYT() { if (progressTimer) { clearInterval(progressTimer); progressTimer = null; } if (ytPlayer) { try { ytPlayer.destroy(); } catch {} ytPlayer = null; } scrubbing = false; pendingPlay = false; fellBack = false; isMutedState = false; exitFsFallback(); }
 function fmtTime(s) { s = Math.max(0, Math.floor(s || 0)); const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60; const mm = h ? String(m).padStart(2,'0') : String(m); return (h ? h+':' : '') + mm + ':' + String(sec).padStart(2,'0'); }
 
 const PLAYER_FRAME = `<div class="video-frame has-poster" id="videoBox"><div class="yt-stage" id="ytStage"></div><img class="vp-poster" id="vpPoster" alt="" referrerpolicy="no-referrer"/><div class="vp-surface" id="vpSurface"></div><div class="vp-spinner"></div><div class="vp-center">${svg(ICO.play,{fill:'currentColor',stroke:'none'})}</div><div class="vp-controls"><div class="vp-progress" id="vpProgress"><div class="vp-track"><div class="vp-buffer" id="vpBuffer"></div><div class="vp-fill" id="vpFill"></div></div><div class="vp-thumb" id="vpThumb"></div><div class="vp-tooltip" id="vpTooltip">0:00</div></div><div class="vp-row"><button class="vp-btn vp-skip" id="vpBack10">${SKIP_BACK}</button><button class="vp-btn vp-play" id="vpPlay">${svg(ICO.play,{fill:'currentColor',stroke:'none'})}</button><button class="vp-btn vp-skip" id="vpFwd10">${SKIP_FWD}</button><div class="vp-vol"><button class="vp-btn" id="vpMute"></button><div class="vp-volbar"><div class="vp-voltrack" id="vpVoltrack"><div class="vp-volfill" id="vpVolfill"></div><div class="vp-volthumb" id="vpVolthumb"></div></div></div></div><span class="vp-time"><span id="vpCurrent">0:00</span><span class="dur"> / <span id="vpDuration">0:00</span></span></span><div class="vp-spacer"></div><div class="vp-menu-wrap"><button class="vp-menu-btn" id="vpSpeed">1× ${svg(ICO.chev,{sw:2})}</button><div class="vp-menu" id="vpSpeedMenu"></div></div><div class="vp-menu-wrap"><button class="vp-menu-btn" id="vpQuality">Auto ${svg(ICO.chev,{sw:2})}</button><div class="vp-menu" id="vpQualityMenu"></div></div><button class="vp-btn" id="vpFs">${svg(ICO.fs,{sw:2})}</button></div></div></div>`;
@@ -168,6 +170,7 @@ function renderLessonPicker() {
 
 function openClass(idx) {
   if (!curClasses[idx]) return;
+  cleanupFullscreen();
   const c = curClasses[idx], ma = $('mainArea');
   ma.innerHTML = `<button class="vp-back" id="vpBack">${svg(ICO.arrowLeft,{sw:2})} All classes</button>${PLAYER_FRAME}<div class="lesson" id="lesson"></div>`;
   $('vpBack').onclick = e => { e.preventDefault(); destroyYT(); if (curClasses.length > 1) renderLessonPicker(); else openClass(0); };
@@ -216,40 +219,119 @@ function togglePlay() { if (fellBack) return; if (!ytPlayer?.playVideo) { markSt
 function seekBy(d) { if (!ytPlayer?.seekTo || fellBack) return; const dur = ytPlayer.getDuration() || 0; let t = (ytPlayer.getCurrentTime()||0) + d; t = Math.max(0, dur ? Math.min(t,dur) : t); ytPlayer.seekTo(t,true); setProgressUI(dur?(t/dur)*100:0); $('vpCurrent').textContent = fmtTime(t); showUI(); scheduleHide(); }
 function toggleMute() { if (!ytPlayer || fellBack) return; if (isMutedState) { isMutedState = false; const r = lastVol > 0 ? lastVol : 100; try { ytPlayer.unMute(); ytPlayer.setVolume(r); } catch {} setVolume(r); } else { try { const c = ytPlayer.getVolume() ?? 100; if (c > 0) lastVol = c; ytPlayer.mute(); } catch {} isMutedState = true; } applyVol(); }
 function setVolX(r) { const v = Math.round(Math.max(0, Math.min(1, r)) * 100); if (v > 0) { lastVol = v; isMutedState = false; try { if (ytPlayer && !fellBack) { ytPlayer.setVolume(v); ytPlayer.unMute(); } } catch {} } else { isMutedState = true; try { if (ytPlayer && !fellBack) ytPlayer.mute(); } catch {} } setVolume(v || 0); applyVol(); }
+function isFsActive() { return !!(document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement || fsFallback); }
+
+function updateFsBtn() {
+  const btn = $('vpFs');
+  if (btn) btn.innerHTML = svg(isFsActive() ? ICO.fsExit : ICO.fs, { sw: 2 });
+}
+
+function enterFsFallback(b) {
+  if (!b) return;
+  fsFallback = true;
+  b.classList.add('fs-fallback');
+  document.body.classList.add('fs-fallback-active');
+  updateFsBtn();
+  if (screen.orientation?.lock) screen.orientation.lock('landscape').catch(()=>{});
+  showUI(); scheduleHide();
+}
+
+function exitFsFallback() {
+  if (fsFallback) {
+    fsFallback = false;
+    const b = $('videoBox');
+    if (b) b.classList.remove('fs-fallback');
+    document.body.classList.remove('fs-fallback-active');
+    updateFsBtn();
+    if (screen.orientation?.unlock) screen.orientation.unlock().catch(()=>{});
+  }
+}
+
 function toggleFS() {
   const b = $('videoBox');
   if (!b) return;
 
-  // iOS Safari: must call webkitEnterFullscreen on the actual <video> element
-  const iframe = b.querySelector('iframe');
-  const videoEl = b.querySelector('video');
-
-  // Check if already fullscreen
-  const isFS = document.fullscreenElement || document.webkitFullscreenElement || document.mozFullScreenElement || document.msFullscreenElement;
-
-  if (isFS) {
-    const exit = document.exitFullscreen || document.webkitExitFullscreen || document.mozCancelFullScreen || document.msExitFullscreen;
-    if (exit) exit.call(document);
+  // --- EXIT paths ---
+  if (isFsActive()) {
+    cleanupFullscreen();
     return;
   }
 
-  // Try container fullscreen first (Android + desktop)
+  // --- ENTER: native API first ---
   const rq = b.requestFullscreen || b.webkitRequestFullscreen || b.mozRequestFullScreen || b.msRequestFullscreen;
-  if (rq) { rq.call(b); return; }
+  if (rq) {
+    Promise.resolve(rq.call(b)).catch(() => {
+      // If native fails (e.g. mobile Safari) use fallback
+      enterFsFallback(b);
+    });
+    return;
+  }
 
-  // iOS Safari fallback: try the iframe, then any video element
-  if (iframe?.webkitRequestFullscreen) { iframe.webkitRequestFullscreen(); return; }
-  if (videoEl?.webkitEnterFullscreen) { videoEl.webkitEnterFullscreen(); return; }
+  // No native API at all (e.g. some older browsers / iOS)
+  enterFsFallback(b);
+
+  // Re-apply volume UI to ensure it stays consistent after potential layout shift
+  applyVol();
+}
+
+/* Exit whatever fullscreen mode is active (native + fallback) */
+function cleanupFullscreen() {
+  if (document.exitFullscreen) document.exitFullscreen().catch(()=>{});
+  else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+  else if (document.mozCancelFullScreen) document.mozCancelFullScreen();
+  else if (document.msExitFullscreen) document.msExitFullscreen();
+  exitFsFallback();
 }
 
 function bindController() {
   const surface = $('vpSurface'), box = $('videoBox');
   let ct = null;
-  surface.onclick = e => { if (ct) { clearTimeout(ct); ct = null; return; } showUI(); scheduleHide(); ct = setTimeout(() => { togglePlay(); ct = null; }, 220); };
+  // Touch double-tap state for mobile fullscreen
+  let lastTapTime = 0, tapTimer = null;
+
+  /* ── Surface click/tap: single tap → toggle play, double tap → fullscreen ── */
+  function handleTap(e) {
+    const now = Date.now();
+    const isDoubleTap = (now - lastTapTime) < 320;
+    lastTapTime = now;
+
+    if (isDoubleTap) {
+      // Double tap → fullscreen
+      clearTimeout(ct); clearTimeout(tapTimer); ct = null;
+      e.preventDefault();
+      toggleFS();
+      return;
+    }
+
+    // Single tap → show UI, then after delay toggle play (unless 2nd tap comes)
+    showUI(); scheduleHide();
+    clearTimeout(tapTimer);
+    tapTimer = setTimeout(() => {
+      // Could be a single tap → toggle play
+      togglePlay();
+      tapTimer = null;
+    }, 280);
+  }
+
+  surface.onclick = e => {
+    if (ct) { clearTimeout(ct); ct = null; return; }
+    handleTap(e);
+  };
+  // Mobile: use touchend for more reliable detection
+  let touchStartTime = 0;
+  surface.addEventListener('touchstart', e => {
+    touchStartTime = Date.now();
+    showUI();
+  }, { passive: true });
+  surface.addEventListener('touchend', e => {
+    // Only count as tap if it was a short touch (< 300ms), not a long-press or drag
+    if (Date.now() - touchStartTime > 300) return;
+    handleTap(e);
+  }, { passive: true });
+  // Desktop dblclick still works as backup
   surface.ondblclick = e => { if (ct) { clearTimeout(ct); ct = null; } e.preventDefault(); toggleFS(); };
+
   box.onmousemove = () => { showUI(); scheduleHide(); }; box.onmouseenter = showUI; box.onmouseleave = () => { if (box.classList.contains('playing')) box.classList.add('hide-ui'); };
-  box.addEventListener('touchstart', () => { showUI(); }, { passive: true });
-  box.addEventListener('touchend', () => { scheduleHide(); }, { passive: true });
   $('vpPlay').onclick = e => { e.stopPropagation(); togglePlay(); };
   $('vpBack10').onclick = e => { e.stopPropagation(); seekBy(-10); };
   $('vpFwd10').onclick = e => { e.stopPropagation(); seekBy(10); };
@@ -267,10 +349,35 @@ function bindController() {
   document.addEventListener('click', e => { if (!e.target.closest('.vp-menu-wrap')) { sm.classList.remove('open'); qm?.classList.remove('open'); } });
   document.addEventListener('touchstart', e => { if (!e.target.closest('.vp-menu-wrap')) { sm.classList.remove('open'); qm?.classList.remove('open'); } }, { passive: true });
   $('vpFs').onclick = e => { e.stopPropagation(); toggleFS(); };
+
+  // Fullscreen change events — update button icon and clean up state
   const fsEvents = ['fullscreenchange', 'webkitfullscreenchange', 'mozfullscreenchange', 'MSFullscreenChange'];
-  fsEvents.forEach(ev => document.addEventListener(ev, () => { showUI(); scheduleHide(); }));
-  document.onkeydown = e => { if (!ytPlayer || fellBack) return; const tag = (e.target.tagName||'').toLowerCase(); if (tag === 'input' || tag === 'textarea') return;
-    switch (e.key) { case ' ': case 'Spacebar': e.preventDefault(); togglePlay(); break; case 'ArrowLeft': e.preventDefault(); seekBy(-10); break; case 'ArrowRight': e.preventDefault(); seekBy(10); break; case 'f': case 'F': e.preventDefault(); toggleFS(); break; case 'm': case 'M': e.preventDefault(); toggleMute(); break; case 'ArrowUp': e.preventDefault(); setVolX(Math.min(100,lastVol+10)/100); break; case 'ArrowDown': e.preventDefault(); setVolX(Math.max(0,lastVol-10)/100); break; }
+  fsEvents.forEach(ev => document.addEventListener(ev, () => {
+    updateFsBtn();
+    if (isFsActive()) { showUI(); scheduleHide(); }
+    else { exitFsFallback(); }
+  }));
+
+  // On window resize (e.g. rotation), keep UI visible
+  window.addEventListener('resize', () => { if (isFsActive()) showUI(); });
+
+  // Orientation change — re-show UI on mobile rotation
+  if (screen.orientation) {
+    screen.orientation.addEventListener('change', () => { showUI(); scheduleHide(); });
+  }
+
+  document.onkeydown = e => {
+    const tag = (e.target.tagName||'').toLowerCase(); if (tag === 'input' || tag === 'textarea') return;
+    switch (e.key) {
+      case 'Escape': if (isFsActive()) { e.preventDefault(); toggleFS(); } return;
+      case 'f': case 'F': e.preventDefault(); toggleFS(); return;
+      case 'm': case 'M': if (!ytPlayer || fellBack) return; e.preventDefault(); toggleMute(); return;
+      case ' ': case 'Spacebar': if (!ytPlayer || fellBack) return; e.preventDefault(); togglePlay(); return;
+      case 'ArrowLeft': if (!ytPlayer || fellBack) return; e.preventDefault(); seekBy(-10); return;
+      case 'ArrowRight': if (!ytPlayer || fellBack) return; e.preventDefault(); seekBy(10); return;
+      case 'ArrowUp': if (!ytPlayer || fellBack) return; e.preventDefault(); setVolX(Math.min(100,lastVol+10)/100); return;
+      case 'ArrowDown': if (!ytPlayer || fellBack) return; e.preventDefault(); setVolX(Math.max(0,lastVol-10)/100); return;
+    }
   };
 }
 
