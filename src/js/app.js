@@ -190,16 +190,40 @@ function drawLesson() {
 }
 
 /* ─── PLAYER LOGIC ─── */
+// Lazy-load the YouTube IFrame API only when a video is actually opened.
+// This keeps it off the critical render path so a slow/blocked youtube CDN
+// can never blank the page (the original <script src=iframe_api> was render-blocking).
+let ytApiLoading = false;
+function loadYTApi(cb) {
+  if (window.YT && window.YT.Player) return cb();
+  window.onYouTubeIframeAPIReady = cb;
+  if (!ytApiLoading) {
+    ytApiLoading = true;
+    const s = document.createElement('script');
+    s.src = 'https://www.youtube.com/iframe_api';
+    s.async = true;
+    // If the script fails to load, surface a friendly fallback instead of hanging forever.
+    s.onerror = () => {
+      ytApiLoading = false;
+      if (curVideoId) {
+        $('videoBox')?.classList.add('is-fallback');
+        $('ytStage').innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${curVideoId}?rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&controls=0&disablekb=1&fs=0&cc_load_policy=0&autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`;
+      }
+    };
+    document.head.appendChild(s);
+  }
+}
+
 function startPlayer(videoId, list) {
   curVideoId = videoId; curList = list; fellBack = false;
-  (function create() {
+  loadYTApi(function create() {
     if (!(window.YT && window.YT.Player)) return setTimeout(create, 120);
     const pv = { controls: 0, modestbranding: 1, rel: 0, playsinline: 1, iv_load_policy: 3, fs: 0, disablekb: 1, cc_load_policy: 0 };
     const opts = { width: '100%', height: '100%', playerVars: pv, videoId: videoId || undefined, host: 'https://www.youtube-nocookie.com', events: { onReady, onStateChange, onPlaybackRateChange: () => updateSpeed(), onError: onErr } };
     if (!videoId && list) { pv.listType = 'playlist'; pv.list = list; }
     $('ytStage').innerHTML = '<div id="ytMount"></div>';
     ytPlayer = new YT.Player('ytMount', opts);
-  })();
+  });
 }
 function onErr() { if (fellBack) return; fellBack = true; if (ytPlayer) { try { ytPlayer.destroy(); } catch {} ytPlayer = null; } if (progressTimer) { clearInterval(progressTimer); progressTimer = null; } $('videoBox')?.classList.add('is-fallback'); $('ytStage').innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${curVideoId}?rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&controls=0&disablekb=1&fs=0&cc_load_policy=0&autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`; }
 function onReady() { if (!ytPlayer || fellBack) return; lastVol = getVolume(); isMutedState = false; ytPlayer.setVolume(lastVol); const sp = getSpeed(); if (sp !== 1) try { ytPlayer.setPlaybackRate(sp); } catch {} applyVol(); buildSpeed(); updateSpeed(); buildQuality(); updateQualityBtn(); startLoop(); if (pendingPlay) { pendingPlay = false; markStarted(); ytPlayer.playVideo(); } }
@@ -381,7 +405,7 @@ function bindController() {
   };
 }
 
-window.onYouTubeIframeAPIReady = () => {};
+window.onYouTubeIframeAPIReady = window.onYouTubeIframeAPIReady || (() => {});
 route();
 
 /* ─── 3D TILT on cards (landing + lesson picker) ─── */
@@ -427,9 +451,29 @@ window.route = function() {
   }, 100);
 };
 
-/* ─── PAGE FADE-IN on load ─── */
+/* ─── PAGE FADE-IN on load ───
+   Reveal as soon as the DOM is ready. Never gate this on window.load —
+   a slow external resource (or a freshly-installed PWA with no network)
+   could otherwise keep the body at opacity:0 = blank page. */
 document.body.style.opacity = '0';
 document.body.style.transition = 'opacity .4s ease';
-window.addEventListener('load', () => {
+function revealPage() {
   requestAnimationFrame(() => { document.body.style.opacity = '1'; });
-});
+}
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  revealPage();
+} else {
+  document.addEventListener('DOMContentLoaded', revealPage, { once: true });
+  // Belt-and-suspenders: if DOMContentLoaded already fired, force-reveal on load.
+  window.addEventListener('load', () => setTimeout(revealPage, 0), { once: true });
+}
+
+/* ─── SERVICE WORKER (PWA: installable + offline app shell) ─── */
+// Register in secure contexts only (https, or localhost over http).
+// Skip in `vite dev` — its own HMR client takes over there.
+const isSecure = location.protocol === 'https:' || location.hostname === 'localhost' || location.hostname === '127.0.0.1';
+if ('serviceWorker' in navigator && isSecure && !import.meta.env?.DEV) {
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(() => {});
+  });
+}
