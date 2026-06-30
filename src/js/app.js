@@ -309,51 +309,33 @@ function cleanupFullscreen() {
 
 function bindController() {
   const surface = $('vpSurface'), box = $('videoBox');
-  let ct = null;
-  // Touch double-tap state for mobile fullscreen
-  let lastTapTime = 0, tapTimer = null;
 
-  /* ── Surface click/tap: single tap → toggle play, double tap → fullscreen ── */
-  function handleTap(e) {
-    const now = Date.now();
-    const isDoubleTap = (now - lastTapTime) < 320;
-    lastTapTime = now;
+  /* ── Surface tap: toggle play ONLY ──
+     Fullscreen is exclusively controlled by the fullscreen icon (#vpFs).
+     No double-tap or dblclick fullscreen.
+     We suppress the synthetic click that follows a touchend so we never
+     double-toggle (play → pause) on mobile. */
+  let touchStartTime = 0, touchMoved = false, lastTouchFire = 0;
+  function surfaceTap() { togglePlay(); showUI(); scheduleHide(); }
 
-    if (isDoubleTap) {
-      // Double tap → fullscreen
-      clearTimeout(ct); clearTimeout(tapTimer); ct = null;
-      e.preventDefault();
-      toggleFS();
-      return;
-    }
-
-    // Single tap → show UI, then after delay toggle play (unless 2nd tap comes)
-    showUI(); scheduleHide();
-    clearTimeout(tapTimer);
-    tapTimer = setTimeout(() => {
-      // Could be a single tap → toggle play
-      togglePlay();
-      tapTimer = null;
-    }, 280);
-  }
-
-  surface.onclick = e => {
-    if (ct) { clearTimeout(ct); ct = null; return; }
-    handleTap(e);
-  };
-  // Mobile: use touchend for more reliable detection
-  let touchStartTime = 0;
   surface.addEventListener('touchstart', e => {
-    touchStartTime = Date.now();
-    showUI();
+    touchStartTime = Date.now(); touchMoved = false;
+    showUI(); scheduleHide();
   }, { passive: true });
+  surface.addEventListener('touchmove', () => { touchMoved = true; }, { passive: true });
   surface.addEventListener('touchend', e => {
-    // Only count as tap if it was a short touch (< 300ms), not a long-press or drag
-    if (Date.now() - touchStartTime > 300) return;
-    handleTap(e);
-  }, { passive: true });
-  // Desktop dblclick still works as backup
-  surface.ondblclick = e => { if (ct) { clearTimeout(ct); ct = null; } e.preventDefault(); toggleFS(); };
+    // Only a short, stationary touch counts as a play/pause tap.
+    if (touchMoved || Date.now() - touchStartTime > 300) return;
+    e.preventDefault();                    // stop the synthetic click that follows
+    lastTouchFire = Date.now();            // guard against click double-fire
+    surfaceTap();
+  });
+  // Click handler — desktop mice, and a fallback for touch. Skip if a touch
+  // just handled it (within 500ms) to avoid the play/pause double-toggle.
+  surface.onclick = () => {
+    if (Date.now() - lastTouchFire < 500) return;
+    surfaceTap();
+  };
 
   box.onmousemove = () => { showUI(); scheduleHide(); }; box.onmouseenter = showUI; box.onmouseleave = () => { if (box.classList.contains('playing')) box.classList.add('hide-ui'); };
   $('vpPlay').onclick = e => { e.stopPropagation(); togglePlay(); };

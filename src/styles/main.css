@@ -238,7 +238,7 @@ h1,h2,h3,.hub-h1,.lp-title,.lesson-title,.lnd-title,.brand-name,.lnd-brand-name{
 .theme-toggle svg,.icon-btn svg{width:17px;height:17px;}
 
 /* ═══ APP SHELL ═══ */
-.app-shell{display:flex;height:100vh;width:100vw;overflow:hidden;}
+.app-shell{display:flex;height:100vh;height:100dvh;width:100vw;overflow:hidden;}
 .sidebar{
   width:var(--sb-w);flex-shrink:0;
   background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
