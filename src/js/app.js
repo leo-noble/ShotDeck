@@ -33,15 +33,18 @@ window.addEventListener('hashchange', () => { cleanupFullscreen(); window.route(
 
 /* ─── LANDING ─── */
 function renderLanding() {
-  setAccent('#0a84ff');
+  setAccent('#7b61ff');
   document.title = 'ShotDeck';
   const app = $('app'); app.className = ''; app.style.cssText = '';
   const { pct, total, done } = overallProgress();
+  const resume = sorted().find(s => !s.soon && subjectPct(s) > 0 && subjectPct(s) < 100) || sorted().find(s => !s.soon);
+  const rTarget = resume ? (resume.chapters.length === 1 ? `#/${resume.key}/${resume.chapters[0].n}` : `#/${resume.key}`) : '#/physics';
+  const rLabel = resume && subjectPct(resume) > 0 ? `Continue ${resume.name}` : 'Start learning';
 
   app.innerHTML = `<section class="landing"><div class="lnd-wrap">
     <nav class="lnd-nav"><div class="lnd-brand"><div class="lnd-mark">${BRAND_ICON}</div><div><div class="lnd-brand-name">Shot Deck</div><div class="lnd-brand-sub">SSC Study Hub</div></div></div>
     <div class="lnd-nav-right"><div class="lnd-stat"><span class="lnd-stat-num">${pct}%</span><span class="lnd-stat-lbl">${done}/${total} done</span></div><button class="theme-toggle" id="tt">${themeIcon()}</button></div></nav>
-    <div class="lnd-hero"><div class="lnd-pill"><b>${total} chapters</b> All SSC subjects, one place</div><h1 class="lnd-title">Master SSC,<br><span class="grad">one chapter at a time.</span></h1><p class="lnd-sub">Premium one-shot classes with a custom video player, progress tracking, and keyboard shortcuts — your entire SSC prep, beautifully organized in one place.</p></div>
+    <div class="lnd-hero"><div class="lnd-pill"><b>${total} chapters</b> All SSC subjects, one place</div><h1 class="lnd-title">Master SSC,<br><span class="grad">one chapter at a time.</span></h1><p class="lnd-sub">Premium one-shot classes with a custom video player, progress tracking, and keyboard shortcuts — your entire SSC prep, beautifully organized in one place.</p><div class="lnd-cta-row"><a class="lnd-cta" href="${rTarget}">${rLabel} ${svg(ICO.arrow,{sw:2.2})}</a><span class="lnd-cta-note">${done > 0 ? `${done} of ${total} chapters done` : `${total} chapters · 6 subjects`}</span></div></div>
     <div class="lnd-sec-head"><span class="lnd-sec-title">Subjects</span><span class="lnd-sec-sub">Pick where you left off</span></div>
     <div class="lnd-grid">${sorted().map(s => {
       const ico = svg(s.icon, { sw: 1.9 });
@@ -137,7 +140,6 @@ const VOLSVG = {
   low: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>',
   muted: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M22 9l-6 6M16 9l6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>'
 };
-const QLABELS = { auto:'Auto', tiny:'144p', small:'240p', medium:'360p', large:'480p', hd720:'720p', hd1080:'1080p', highres:'Max' };
 const SKIP_BACK = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7"/><path d="M3 4v5h5"/><text x="12" y="15.5" font-size="7.5" font-weight="800" fill="currentColor" stroke="none" text-anchor="middle">10</text></svg>`;
 const SKIP_FWD = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/><text x="12" y="15.5" font-size="7.5" font-weight="800" fill="currentColor" stroke="none" text-anchor="middle">10</text></svg>`;
 
@@ -148,7 +150,7 @@ const isMobile = isIos || /Android/.test(navigator.userAgent);
 function destroyYT() { if (progressTimer) { clearInterval(progressTimer); progressTimer = null; } if (ytPlayer) { try { ytPlayer.destroy(); } catch {} ytPlayer = null; } scrubbing = false; pendingPlay = false; fellBack = false; isMutedState = false; exitFsFallback(); }
 function fmtTime(s) { s = Math.max(0, Math.floor(s || 0)); const h = Math.floor(s / 3600), m = Math.floor((s % 3600) / 60), sec = s % 60; const mm = h ? String(m).padStart(2,'0') : String(m); return (h ? h+':' : '') + mm + ':' + String(sec).padStart(2,'0'); }
 
-const PLAYER_FRAME = `<div class="video-frame has-poster" id="videoBox"><div class="yt-stage" id="ytStage"></div><img class="vp-poster" id="vpPoster" alt="" referrerpolicy="no-referrer"/><div class="vp-surface" id="vpSurface"></div><div class="vp-spinner"></div><div class="vp-center">${svg(ICO.play,{fill:'currentColor',stroke:'none'})}</div><div class="vp-controls"><div class="vp-progress" id="vpProgress"><div class="vp-track"><div class="vp-buffer" id="vpBuffer"></div><div class="vp-fill" id="vpFill"></div></div><div class="vp-thumb" id="vpThumb"></div><div class="vp-tooltip" id="vpTooltip">0:00</div></div><div class="vp-row"><button class="vp-btn vp-skip" id="vpBack10">${SKIP_BACK}</button><button class="vp-btn vp-play" id="vpPlay">${svg(ICO.play,{fill:'currentColor',stroke:'none'})}</button><button class="vp-btn vp-skip" id="vpFwd10">${SKIP_FWD}</button><div class="vp-vol"><button class="vp-btn" id="vpMute"></button><div class="vp-volbar"><div class="vp-voltrack" id="vpVoltrack"><div class="vp-volfill" id="vpVolfill"></div><div class="vp-volthumb" id="vpVolthumb"></div></div></div></div><span class="vp-time"><span id="vpCurrent">0:00</span><span class="dur"> / <span id="vpDuration">0:00</span></span></span><div class="vp-spacer"></div><div class="vp-menu-wrap"><button class="vp-menu-btn" id="vpSpeed">1× ${svg(ICO.chev,{sw:2})}</button><div class="vp-menu" id="vpSpeedMenu"></div></div><div class="vp-menu-wrap"><button class="vp-menu-btn" id="vpQuality">Auto ${svg(ICO.chev,{sw:2})}</button><div class="vp-menu" id="vpQualityMenu"></div></div><button class="vp-btn" id="vpFs">${svg(ICO.fs,{sw:2})}</button></div></div></div>`;
+const PLAYER_FRAME = `<div class="video-frame has-poster" id="videoBox"><div class="yt-stage" id="ytStage"></div><img class="vp-poster" id="vpPoster" alt="" referrerpolicy="no-referrer"/><div class="vp-surface" id="vpSurface"></div><div class="vp-scrim-top"></div><div class="vp-spinner"></div><div class="vp-center">${svg(ICO.play,{fill:'currentColor',stroke:'none'})}</div><div class="vp-controls"><div class="vp-progress" id="vpProgress"><div class="vp-track"><div class="vp-buffer" id="vpBuffer"></div><div class="vp-fill" id="vpFill"></div></div><div class="vp-thumb" id="vpThumb"></div><div class="vp-tooltip" id="vpTooltip">0:00</div></div><div class="vp-row"><button class="vp-btn vp-skip" id="vpBack10">${SKIP_BACK}</button><button class="vp-btn vp-play" id="vpPlay">${svg(ICO.play,{fill:'currentColor',stroke:'none'})}</button><button class="vp-btn vp-skip" id="vpFwd10">${SKIP_FWD}</button><div class="vp-vol"><button class="vp-btn" id="vpMute"></button><div class="vp-volbar"><div class="vp-voltrack" id="vpVoltrack"><div class="vp-volfill" id="vpVolfill"></div><div class="vp-volthumb" id="vpVolthumb"></div></div></div></div><span class="vp-time"><span id="vpCurrent">0:00</span><span class="dur"> / <span id="vpDuration">0:00</span></span></span><div class="vp-spacer"></div><div class="vp-menu-wrap"><button class="vp-menu-btn" id="vpSpeed">1× ${svg(ICO.chev,{sw:2})}</button><div class="vp-menu" id="vpSpeedMenu"></div></div><button class="vp-btn" id="vpFs">${svg(ICO.fs,{sw:2})}</button></div></div></div>`;
 
 function renderChapter(key, n) {
   destroyYT();
@@ -226,16 +228,14 @@ function startPlayer(videoId, list) {
   });
 }
 function onErr() { if (fellBack) return; fellBack = true; if (ytPlayer) { try { ytPlayer.destroy(); } catch {} ytPlayer = null; } if (progressTimer) { clearInterval(progressTimer); progressTimer = null; } $('videoBox')?.classList.add('is-fallback'); $('ytStage').innerHTML = `<iframe src="https://www.youtube-nocookie.com/embed/${curVideoId}?rel=0&modestbranding=1&playsinline=1&iv_load_policy=3&controls=0&disablekb=1&fs=0&cc_load_policy=0&autoplay=1" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>`; }
-function onReady() { if (!ytPlayer || fellBack) return; lastVol = getVolume(); isMutedState = false; ytPlayer.setVolume(lastVol); const sp = getSpeed(); if (sp !== 1) try { ytPlayer.setPlaybackRate(sp); } catch {} applyVol(); buildSpeed(); updateSpeed(); buildQuality(); updateQualityBtn(); startLoop(); if (pendingPlay) { pendingPlay = false; markStarted(); ytPlayer.playVideo(); } }
-function onStateChange(e) { if (fellBack) return; const box = $('videoBox'); if (!box || !window.YT) return; const playing = e.data === YT.PlayerState.PLAYING, buffering = e.data === YT.PlayerState.BUFFERING; if (playing) markStarted(); box.classList.toggle('playing', playing); box.classList.toggle('buffering', buffering); updatePlayIcon(playing); if (playing) scheduleHide(); }
+function onReady() { if (!ytPlayer || fellBack) return; lastVol = getVolume(); isMutedState = false; ytPlayer.setVolume(lastVol); const sp = getSpeed(); if (sp !== 1) try { ytPlayer.setPlaybackRate(sp); } catch {} applyVol(); buildSpeed(); updateSpeed(); startLoop(); if (pendingPlay) { pendingPlay = false; markStarted(); ytPlayer.playVideo(); } }
+function onStateChange(e) { if (fellBack) return; const box = $('videoBox'); if (!box || !window.YT) return; const playing = e.data === YT.PlayerState.PLAYING, buffering = e.data === YT.PlayerState.BUFFERING; if (playing) { markStarted(); box.classList.remove('ended'); } box.classList.toggle('playing', playing); box.classList.toggle('buffering', buffering); updatePlayIcon(playing); if (playing) scheduleHide(); if (e.data === YT.PlayerState.ENDED) { box.classList.add('has-poster', 'ended'); box.classList.remove('hide-ui'); showUI(); } }
 function markStarted() { const b = $('videoBox'); if (b) { b.classList.add('started'); b.classList.remove('has-poster'); } }
 function setProgressUI(p) { const f = $('vpFill'), th = $('vpThumb'); if (f) f.style.width = p + '%'; if (th) th.style.left = p + '%'; }
 function updatePlayIcon(playing) { const b = $('vpPlay'); if (b) b.innerHTML = svg(playing ? ICO.pause : ICO.play, { fill: 'currentColor', stroke: 'none' }); }
 function applyVol() { const fill = $('vpVolfill'), th = $('vpVolthumb'), btn = $('vpMute'); const shown = isMutedState ? 0 : lastVol; if (fill) fill.style.width = shown + '%'; if (th) th.style.left = shown + '%'; if (btn) btn.innerHTML = (isMutedState || shown === 0) ? VOLSVG.muted : (shown < 50 ? VOLSVG.low : VOLSVG.high); }
 function buildSpeed() { const m = $('vpSpeedMenu'); if (!m) return; m.innerHTML = SPEEDS.map(r => `<button class="vp-menu-item ${r === getSpeed() ? 'active' : ''}" data-r="${r}"><span>${r}×</span>${svg(ICO.check,{sw:2.4,cls:'vp-menu-check',fill:'none'})}</button>`).join(''); m.querySelectorAll('.vp-menu-item').forEach(b => b.onclick = e => { e.stopPropagation(); const r = +b.dataset.r; setSpeed(r); if (ytPlayer && !fellBack) ytPlayer.setPlaybackRate(r); updateSpeed(); }); }
 function updateSpeed() { const cur = ytPlayer && !fellBack ? ytPlayer.getPlaybackRate?.() : getSpeed(); const b = $('vpSpeed'); if (b) b.innerHTML = `${cur}× ${svg(ICO.chev,{sw:2})}`; $('vpSpeedMenu')?.querySelectorAll('.vp-menu-item').forEach(b => b.classList.toggle('active', +b.dataset.r === cur)); }
-function buildQuality() { const menu = $('vpQualityMenu'); if (!menu) return; let levels = ['auto','hd1080','hd720','large','medium','small','tiny']; if (ytPlayer && !fellBack) { try { const av = ytPlayer.getAvailableQualityLevels?.(); if (av?.length) { const s = new Set(av); levels = ['auto', ...['hd1080','hd720','large','medium','small','tiny'].filter(q => s.has(q))]; } } catch {} } menu.innerHTML = levels.map(q => `<button class="vp-menu-item ${q==='auto'?'active':''}" data-q="${q}"><span>${QLABELS[q]||q}</span>${svg(ICO.check,{sw:2.4,cls:'vp-menu-check',fill:'none'})}</button>`).join(''); menu.querySelectorAll('.vp-menu-item').forEach(b => b.onclick = e => { e.stopPropagation(); const q = b.dataset.q; $('vpQualityMenu').querySelectorAll('.vp-menu-item').forEach(x => x.classList.toggle('active', x.dataset.q === q)); $('vpQuality').innerHTML = `${QLABELS[q]||q} ${svg(ICO.chev,{sw:2})}`; if (ytPlayer && !fellBack) try { ytPlayer.setPlaybackQuality(q); } catch {} }); }
-function updateQualityBtn() { const b = $('vpQuality'); if (b) b.innerHTML = `Auto ${svg(ICO.chev,{sw:2})}`; }
 function startLoop() { if (progressTimer) clearInterval(progressTimer); progressTimer = setInterval(() => { if (!ytPlayer || fellBack || scrubbing) return; const c = ytPlayer.getCurrentTime() || 0, d = ytPlayer.getDuration() || 0; setProgressUI(d ? (c/d)*100 : 0); $('vpCurrent').textContent = fmtTime(c); $('vpDuration').textContent = fmtTime(d); $('vpBuffer').style.width = ((ytPlayer.getVideoLoadedFraction?.()||0)*100) + '%'; }, 250); }
 function showUI() { const b = $('videoBox'); if (b) { b.classList.add('show-ui'); b.classList.remove('hide-ui'); } }
 function scheduleHide() { const b = $('videoBox'); if (!b) return; clearTimeout(hideTimer); hideTimer = setTimeout(() => { if (b.classList.contains('playing')) { b.classList.remove('show-ui'); b.classList.add('hide-ui'); } }, 4000); }
@@ -350,10 +350,9 @@ function bindController() {
   }
   const bar = $('vpProgress'); const rat = x => { const r = bar.getBoundingClientRect(); return Math.max(0, Math.min(1,(x-r.left)/r.width)); }; const prev = x => { pendingRatio = rat(x); setProgressUI(pendingRatio*100); const d = ytPlayer?ytPlayer.getDuration()||0:0; $('vpCurrent').textContent = fmtTime(pendingRatio*d); }; const tip = x => { const r = rat(x), t = $('vpTooltip'), d = ytPlayer?ytPlayer.getDuration()||0:0; if (t) { t.textContent = fmtTime(r*d); t.style.left = r*100+'%'; t.style.opacity = 1; } };
   bar.onpointerdown = e => { scrubbing = true; bar.classList.add('scrubbing'); bar.setPointerCapture(e.pointerId); prev(e.clientX); }; bar.onpointermove = e => { tip(e.clientX); if (scrubbing) prev(e.clientX); }; bar.onpointerup = () => { if (!scrubbing) return; scrubbing = false; bar.classList.remove('scrubbing'); if (ytPlayer && !fellBack) ytPlayer.seekTo(pendingRatio*(ytPlayer.getDuration()||0),true); }; bar.onpointerleave = () => { const t = $('vpTooltip'); if (t) t.style.opacity = 0; };
-  const sb = $('vpSpeed'), sm = $('vpSpeedMenu'); sb.onclick = e => { e.stopPropagation(); sm.classList.toggle('open'); };
-  const qb = $('vpQuality'), qm = $('vpQualityMenu'); if (qb && qm) qb.onclick = e => { e.stopPropagation(); qm.classList.toggle('open'); sm.classList.remove('open'); };
-  document.addEventListener('click', e => { if (!e.target.closest('.vp-menu-wrap')) { sm.classList.remove('open'); qm?.classList.remove('open'); } });
-  document.addEventListener('touchstart', e => { if (!e.target.closest('.vp-menu-wrap')) { sm.classList.remove('open'); qm?.classList.remove('open'); } }, { passive: true });
+  const sb = $('vpSpeed'), sm = $('vpSpeedMenu'); sb.onclick = e => { e.stopPropagation(); sm.classList.toggle('open'); sb.classList.toggle('active', sm.classList.contains('open')); };
+  document.addEventListener('click', e => { if (!e.target.closest('.vp-menu-wrap')) { sm.classList.remove('open'); sb.classList.remove('active'); } });
+  document.addEventListener('touchstart', e => { if (!e.target.closest('.vp-menu-wrap')) { sm.classList.remove('open'); sb.classList.remove('active'); } }, { passive: true });
   $('vpFs').onclick = e => { e.stopPropagation(); toggleFS(); };
 
   // Fullscreen change events — update button icon and clean up state
@@ -390,22 +389,8 @@ function bindController() {
 window.onYouTubeIframeAPIReady = window.onYouTubeIframeAPIReady || (() => {});
 route();
 
-/* ─── 3D TILT on cards (landing + lesson picker) ─── */
-function initTilt() {
-  document.querySelectorAll('.lc:not(.lc-soon), .lpcard').forEach(card => {
-    card.addEventListener('mousemove', e => {
-      const r = card.getBoundingClientRect();
-      const cx = r.left + r.width / 2;
-      const cy = r.top + r.height / 2;
-      const rx = ((e.clientY - cy) / r.height) * -8;
-      const ry = ((e.clientX - cx) / r.width) * 8;
-      card.style.transform = `perspective(600px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
-    });
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = '';
-    });
-  });
-}
+/* Tilt removed — editorial-minimal uses flat cards with a refined CSS hover. */
+function initTilt() {}
 
 /* ─── SCROLL PROGRESS BAR ─── */
 function updateScrollProgress() {
