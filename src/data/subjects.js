@@ -25,6 +25,7 @@ export const SUBJECTS = [
       { n: 8, title: 'আলোর প্রতিফলন', desc: 'প্রতিফলনের সূত্র, সমতল ও গোলীয় দর্পণ, প্রতিবিম্বের প্রকৃতি, দর্পণ সমীকরণ ও আবর্ধন।', video: 'tyiaB96lgOE', list: 'PLsRCKEpC3AemytSXqy-dNa8gPkVLfaCA3' },
       { n: 9, title: 'আলোর প্রতিসরণ', desc: 'স্নেলের সূত্র, প্রতিসরাঙ্ক, পূর্ণ অভ্যন্তরীণ প্রতিফলন, লেন্সের প্রকারভেদ, লেন্স সমীকরণ ও আলোর বিচ্ছুরণ।', video: 'p8pAlMbZ5bc', list: 'PLsRCKEpC3AemytSXqy-dNa8gPkVLfaCA3' },
       { n: 10, title: 'স্থির তড়িৎ', desc: 'আধানের ধর্ম, কুলম্বের সূত্র, তড়িৎক্ষেত্র ও বিভব, ধারক ও বৈদ্যুতিক শক্তি সঞ্চয়।', video: 'bIZiYkNPKsw', list: 'PLsRCKEpC3AemytSXqy-dNa8gPkVLfaCA3' },
+      { n: 11, title: 'চুম্বক ও চুম্বকত্ব', desc: 'চুম্বকের ধর্ম, চৌম্বক ক্ষেত্র, পৃথিবীর চুম্বকত্ব, চুম্বকীয় পদার্থ ও চুম্বকের ব্যবহার।', video: 'HT9rIb6_YoI', list: 'PLsRCKEpC3AemytSXqy-dNa8gPkVLfaCA3' },
       { n: 12, title: 'বিদ্যুতের চৌম্বক ক্রিয়া', desc: 'চৌম্বকক্ষেত্র, তড়িৎবাহী তারে বল, গ্যালভানোমিটার, তড়িৎচুম্বকীয় আবেশ ও ট্রান্সফর্মার।', video: '8eylhscdWUw', list: 'PLsRCKEpC3AemytSXqy-dNa8gPkVLfaCA3' },
       { n: 13, title: 'আধুনিক পদার্থবিজ্ঞান ও ইলেকট্রনিকস', desc: 'তেজস্ক্রিয়তা, নিউক্লিয় বিভাজন ও সংযোজন, অর্ধপরিবাহী, ডায়োড, ট্রানজিস্টার ও লজিক গেট।', video: 'aNzxFObO7oc', list: 'PLsRCKEpC3AemytSXqy-dNa8gPkVLfaCA3' },
     ],
@@ -50,8 +51,12 @@ export const SUBJECTS = [
       { n: 7, title: 'রাসায়নিক বিক্রিয়া', desc: 'রাসায়নিক বিক্রিয়ার সংজ্ঞা ও শ্রেণিবিন্যাস, যোজনী, প্রতিস্থাপন ও জারণ-বিজারণ বিক্রিয়া, সমীকরণ সমতা ও বিক্রিয়ার হার।', video: 'DG7W26oENN8', list: null },
       { n: 8, title: 'রসায়ন ও শক্তি', desc: 'রাসায়নিক বিক্রিয়ায় শক্তির পরিবর্তন, তাপ শোষণ ও নির্গমন বিক্রিয়া, জ্বালানি, দহন ও শক্তির সংরক্ষণ।', video: 'p2RLAOwuIBo', list: null },
       { n: 9, title: 'এসিড-ক্ষারক সমতা', desc: 'এসিড-ক্ষারক সমতা, প্রশমন বিক্রিয়ার পরিমাণগত বিশ্লেষণ, মোলারিটি ও সূচকের সাহায্যে সমতা বিন্দু নির্ণয়।', video: 'FlsJiOoV73M', list: null },
-      { n: 10, title: 'খনিজ সম্পদ: ধাতু-অধাতু', desc: 'ধাতু ও অধাতুর ধর্ম, খনিজ ও আকরিক, ধাতু নিষ্কাশন, লোহা, তামা ও অ্যালুমিনিয়ামের ব্যবহার।', video: 'EQmgoIS6SJo', list: null },
+      { n: 10, title: 'খনিজ সম্পদ: ধাতু-অধাতু', desc: 'ধাতু ও অধাতুর ধর্ম, খনিজ ও আকরিক, ধাতু নিষ্কাশন, লোহা, তামা ও অ্যালুমিনিয়ামের ব্যবহার।', classes: [
+        { video: 'EQmgoIS6SJo', list: null, label: 'ক্লাস ১' },
+        { video: 'eQeOb9R7hB4', list: null, label: 'ক্লাস ২' },
+      ] },
       { n: 11, title: 'খনিজ সম্পদ: জীবাশ্ম', desc: 'জীবাশ্ম জ্বালানি — প্রাকৃতিক গ্যাস, পেট্রোলিয়াম ও কয়লা, এর সৃষ্টি, শোধন প্রক্রিয়া ও পরিবেশগত প্রভাব।', video: 'vfkHr9LGqJ4', list: 'PLsRCKEpC3Aekdmf9Brgdv6pREnKZepHtL' },
+      { n: 12, title: 'আমাদের জীবনে রসায়ন', desc: 'দৈনন্দিন জীবনে রসায়নের ব্যবহার, ঔষধ, রঞ্জক, সাবান, সার, কীটনাশক ও রাসায়নের গুরুত্ব।' },
     ],
   },
   {
@@ -66,33 +71,35 @@ export const SUBJECTS = [
     playlist: null,
     icon: '<path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10Z"/><path d="M2 21c0-3 1.85-5.36 5.08-6"/>',
     chapters: [
-      { n: 1, title: 'ল্যাবরেটরি', desc: 'অণুবীক্ষণ যন্ত্রের ব্যবহার, স্লাইড তৈরি, ল্যাবরেটরির প্রধান সরঞ্জাম ও নিরাপদ কাজের পদ্ধতি।', classes: [
+      { n: 1, title: 'জীবনপাঠ', desc: 'জীববিজ্ঞানের পরিচিতি, জীবের বৈশিষ্ট্য, জীবের শ্রেণিবিন্যাস ও জীবজগতের মৌলিক ধারণা।', classes: [
         { video: 'nbluTcJsh1o', list: 'PLsRCKEpC3AenlUtt29YnCud7j0yQdFCs4', label: 'ক্লাস ১' },
         { video: 'IzkzhfxNaZI', list: 'PLsRCKEpC3AenlUtt29YnCud7j0yQdFCs4', label: 'ক্লাস ২' },
       ] },
-      { n: 2, title: 'কোষ ও এর গঠন', desc: 'প্রোক্যারিওটিক ও ইউক্যারিওটিক কোষ, কোষ ঝিল্লি, প্রোটোপ্লাজম ও প্রধান অঙ্গাণুসমূহের গঠন ও কাজ।', classes: [
+      { n: 2, title: 'জীবকোষ ও টিস্যু', desc: 'কোষের গঠন ও কাজ, প্রোক্যারিওটিক ও ইউক্যারিওটিক কোষ, উদ্ভিদ ও প্রাণী টিস্যুর প্রকারভেদ ও কাজ।', classes: [
         { video: 'v1gDcZg5FCk', list: 'PLsRCKEpC3AenlUtt29YnCud7j0yQdFCs4', label: 'ক্লাস ১' },
         { video: 'Cfm7ytqhhk4', list: 'PLsRCKEpC3AenlUtt29YnCud7j0yQdFCs4', label: 'ক্লাস ২' },
+        { video: 'H42pxKhjSFk', list: 'PLsRCKEpC3AekArP0cs7Z5wvfCzD5GRJkW', label: 'ক্লাস ৩' },
       ] },
       { n: 3, title: 'কোষ বিভাজন', desc: 'কোষচক্র, মাইটোসিস ও মায়োসিস কোষ বিভাজন, ক্রোমোসোম ও বংশগতির মৌলিক ধারণা।', classes: [
         { video: 'Bkr3eoohz4g', list: 'PLsRCKEpC3AenlUtt29YnCud7j0yQdFCs4', label: 'ক্লাস ১' },
         { video: 'I_3qDJWZxuo', list: null, label: 'ক্লাস ২' },
       ] },
-      { n: 4, title: 'প্রাণীর শ্রেণিবিন্যাস', desc: 'জীবজগতের শ্রেণিবিন্যাসের ধারণা, পাঁচ রাজ্য শ্রেণিবিন্যাস পদ্ধতি ও জীবের বিভিন্ন গোষ্ঠী।', classes: [
-        { video: 'aEx4tHTGuSk', list: null, label: 'ক্লাস ১' },
-        { video: 'kwMo8-8YfCk', list: 'PLsRCKEpC3AekArP0cs7Z5wvfCzD5GRJkW', label: 'ক্লাস ২' },
+      { n: 4, title: 'জীবনীশক্তি', desc: 'সালোকসংশ্লেষণ, শ্বসন, ATP উৎপাদন, খাদ্য শৃঙ্খল ও পুষ্টির উৎস — জীবে শক্তির প্রবাহ।', classes: [
+        { video: 'zj8n5vyHPbE', list: null, label: 'ক্লাস ১' },
+        { video: 'Z5b-8vJ3gOE', list: 'PLsRCKEpC3AekArP0cs7Z5wvfCzD5GRJkW', label: 'ক্লাস ২' },
       ] },
-      { n: 5, title: 'টিস্যু ও টিস্যুতন্ত্র', desc: 'উদ্ভিদ ও প্রাণীদেহের টিস্যুর প্রকারভেদ, গঠন, কাজ ও টিস্যুতন্ত্রের সামগ্রিক ধারণা।', video: 'H42pxKhjSFk', list: 'PLsRCKEpC3AekArP0cs7Z5wvfCzD5GRJkW' },
-      { n: 6, title: 'প্রাণীর বিভিন্ন তন্ত্রের গঠন ও কাজ', desc: 'প্রাণীদেহের প্রধান তন্ত্রসমূহের গঠন, কাজ ও তাদের পারস্পরিক সম্পর্ক।', video: 'BCd0-8NeWNI', list: 'PLsRCKEpC3AekArP0cs7Z5wvfCzD5GRJkW' },
-      { n: 7, title: 'উদ্ভিদের বহিরাঙ্গ গঠন ও কাজ', desc: 'সপুষ্পক উদ্ভিদের মূল, কাণ্ড, পত্র, পুষ্প ও ফলের বহিরাঙ্গ গঠন ও কাজ।', video: 'zj8n5vyHPbE', list: null },
-      { n: 8, title: 'উদ্ভিদের অন্তরাঙ্গ গঠন ও কাজ', desc: 'উদ্ভিদের অন্তরাঙ্গ কলাসমূহের গঠন, পরিবহন তন্ত্র ও শ্বসন-সালোকসংশ্লেষণ প্রক্রিয়া।', video: 'Z5b-8vJ3gOE', list: 'PLsRCKEpC3AekArP0cs7Z5wvfCzD5GRJkW' },
-      { n: 11, title: 'বংশগতি ও বিবর্তন', desc: 'ডিএনএ, জিন, মেন্ডেলের সূত্র, যৌন জনন ও বিবর্তন তত্ত্বের মৌলিক ধারণা।', video: 'E2pi1AmJDDU', list: 'PLsRCKEpC3AekArP0cs7Z5wvfCzD5GRJkW' },
-      { n: 12, title: 'প্রাণীর জনন', desc: 'অঙ্গীয় ও অঙ্গীয়বিহীন জনন, মানব জননতন্ত্র, ভ্রূণ গঠন ও জন্ম প্রক্রিয়া।', classes: [
+      { n: 5, title: 'খাদ্য, পুষ্টি এবং পরিপাক', desc: 'পুষ্টির উপাদান, খাদ্যের ধরন, পরিপাকতন্ত্র, এনজাইম ও পুষ্টি সম্পর্কিত রোগ।', video: 'BpaqLjvVuV8', list: 'PLsRCKEpC3AekArP0cs7Z5wvfCzD5GRJkW' },
+      { n: 6, title: 'জীবে পরিবহন', desc: 'উদ্ভিদ ও প্রাণীদেহে পদার্থ পরিবহন, রক্ত সংবহনতন্ত্র, হৃৎপিণ্ড ও লসিকাতন্ত্র।', video: 'BCd0-8NeWNI', list: 'PLsRCKEpC3AekArP0cs7Z5wvfCzD5GRJkW' },
+      { n: 7, title: 'গ্যাসীয় বিনিময়', desc: 'শ্বাস-প্রশ্বাস, গ্যাসীয় বিনিময়ের প্রক্রিয়া, শ্বাসকোষ ও উদ্ভিদে গ্যাসীয় বিনিময়।', video: 'aEx4tHTGuSk', list: null },
+      { n: 8, title: 'রেচন প্রক্রিয়া', desc: 'রেচনতন্ত্র, কিডনির গঠন ও কাজ, নেফ্রন, প্রস্রাব গঠন ও রেচন সম্পর্কিত রোগ।', video: 'pzRl1mAnfWs', list: 'PLsRCKEpC3AekArP0cs7Z5wvfCzD5GRJkW' },
+      { n: 9, title: 'রোগ ও রোগ প্রতিরোধ', desc: 'রোগের ধরন, সংক্রামক ও অনুবংশগত রোগ, রোগ প্রতিরোধ ব্যবস্থা, অ্যান্টিবডি, টিকা ও প্রতিরোধ ক্ষমতা।', video: '0UJe2X-iMPo', list: 'PLsRCKEpC3AekArP0cs7Z5wvfCzD5GRJkW' },
+      { n: 10, title: 'সমন্বয়', desc: 'স্নায়ুতন্ত্র, হরমোন, অন্তঃক্ষরা গ্রন্থি, স্নায়ু ও হরমোনের সমন্বয়ে শারীরিক কার্যক্রম নিয়ন্ত্রণ।', video: 'tlXcSHZ8dyY', list: 'PLsRCKEpC3AekArP0cs7Z5wvfCzD5GRJkW' },
+      { n: 11, title: 'জীবের প্রজনন', desc: 'অঙ্গীয় ও অঙ্গীয়বিহীন জনন, মানব জননতন্ত্র, ভ্রূণ গঠন ও জন্ম প্রক্রিয়া।', classes: [
         { video: 'K215ijslzIg', list: 'PLsRCKEpC3AekArP0cs7Z5wvfCzD5GRJkW', label: 'ক্লাস ১' },
         { video: 'qfd1_P_h-NU', list: null, label: 'ক্লাস ২' },
       ] },
-      { n: 13, title: 'জীবপ্রযুক্তি', desc: 'জিনগত প্রকৌশল, প্লাজমিড, বায়োরিয়েক্টর ও জীবপ্রযুক্তির ব্যবহার ও নৈতিকতা।', video: 'nKrfVAnSP_0', list: 'PLsmWY_iJRQwyuq_LTmBAfYKW8l_MOrEiS' },
-      { n: 14, title: 'রোগ প্রতিরোধ ব্যবস্থা', desc: 'মানবদেহে রোগ প্রতিরোধ ব্যবস্থা, অ্যান্টিবডি, টিকা ও প্রতিরোধ ক্ষমতার ধারণা।', video: '0UJe2X-iMPo', list: 'PLsRCKEpC3AekArP0cs7Z5wvfCzD5GRJkW' },
+      { n: 12, title: 'জীবের বংশগতি ও জৈব অভিব্যক্তি', desc: 'ডিএনএ, জিন, মেন্ডেলের সূত্র, লিঙ্গ নির্ধারণ ও জৈব অভিব্যক্তির মৌলিক ধারণা।', video: 'E2pi1AmJDDU', list: 'PLsRCKEpC3AekArP0cs7Z5wvfCzD5GRJkW' },
+      { n: 13, title: 'জীবের পরিবেশ', desc: 'বাস্তুতন্ত্র, খাদ্য শৃঙ্খল, জীববৈচিত্র্য, পরিবেশ দূষণ ও জীবের পরিবেশগত ভূমিকা।', video: 'nKrfVAnSP_0', list: 'PLsRCKEpC3AekArP0cs7Z5wvfCzD5GRJkW' },
     ],
   },
   {
@@ -112,16 +119,16 @@ export const SUBJECTS = [
       { n: 3, title: 'বীজগাণিতিক রাশি (Algebraic Expressions)', desc: 'বীজগাণিতিক রাশির প্রকারভেদ, যোগ-বিয়োগ-গুণ-ভাগ, উৎপাদক বিশ্লেষণ ও অভেদ।', video: 'HutjzjTsoR0', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR', practice: { video: 'hRFKZSVUeKc', label: 'Practice (CQ/MCQ/SQ)' } },
       { n: 4, title: 'সূচক ও লগারিদম (Exponents & Logarithms)', desc: 'সূচকের সূত্র, ঋণাত্মক ও ভগ্নাংশ সূচক, লগারিদমের ধারণা ও লগারিদমের সূত্রসমূহের প্রয়োগ।', video: 'SOcMESM_5Oo', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR' },
       { n: 5, title: 'এক চলকবিশিষ্ট সমীকরণ (Equations)', desc: 'এক চলকবিশিষ্ট সরল ও দ্বিঘাত সমীকরণ, সমীকরণ সমাধানের পদ্ধতি ও বাস্তব সমস্যার গাণিতিক সমাধান।', video: 'Hz3RlXkdgEg', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR' },
-      { n: 6, title: 'সম্পাদ্য (Practical Geometry)', desc: 'জ্যামিতিক সম্পাদ্য — ত্রিভুজ ও চতুর্ভুজ অঙ্কন, কোণ সমদ্বিখণ্ডক ও বিভিন্ন সম্পাদ্য নির্মাণের প্রক্রিয়া।', video: 'i9SYp_WDitU', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR' },
-      { n: 7, title: 'বৃত্ত (Circle)', desc: 'বৃত্তের ধারণা, কেন্দ্র, ব্যাসার্ধ, জ্যা ও বিপণ্য, বৃত্তের স্পর্শক ও বৃত্তীয় উপপাদ্য।', video: 'gmOaOIMcvUo', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR' },
-      { n: 8, title: 'ত্রিকোণমিতি (Trigonometry)', desc: 'ত্রিকোণমিতিক অনুপাত, মান নির্ণয়, ত্রিকোণমিতিক অভেদ ও সূত্রসমূহের প্রয়োগ।', video: 'bF_UbL4HU2M', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR', practice: { video: 'eEb5WYjmAr4', label: 'Practice (CQ/MCQ/SQ)' } },
-      { n: 9, title: 'দূরত্ব ও উচ্চতা (Distance & Elevation)', desc: 'উচ্চতা ও দূরত্ব নির্ণয়ে ত্রিকোণমিতির প্রয়োগ, কোণের মান ও বাস্তব জ্যামিতিক সমস্যা সমাধান।', video: 'bchlwIwsrY4', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR' },
-      { n: 10, title: 'বীজগাণিতিক অনুপাত ও সমানুপাত', desc: 'অনুপাত ও সমানুপাতের ধারণা, বীজগাণিতিক অনুপাতের সূত্র ও বাস্তব সমস্যায় প্রয়োগ।', video: 'M7D6xQv3Wsg', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR' },
-      { n: 11, title: 'দুই চলকবিশিষ্ট সরলরেখা (Calculator Hacks)', desc: 'দুই চলকবিশিষ্ট রৈখিক সমীকরণ ও সরলরেখা, ঢাল, ছেদক ও ক্যালকুলেটর হ্যাক্স সহ দ্রুত সমাধান।', video: 'p9aKNFd4GlE', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR' },
-      { n: 12, title: 'সসীম ধারা (Finite Series)', desc: 'সসীম সমান্তর ও সমগু ধারা, পদ ও সমষ্টি নির্ণয়ের সূত্র ও প্রয়োগ।', video: 'sBvAE8XLKDY', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR' },
-      { n: 13, title: 'ক্ষেত্রফল সংক্রান্ত উপপাদ্য (Theorems on Area)', desc: 'ত্রিভুজ ও চতুর্ভুজের ক্ষেত্রফল সংক্রান্ত উপপাদ্য ও তাদের প্রমাণ ও প্রয়োগ।', video: 'e8EN7OO8tNU', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR' },
-      { n: 14, title: 'পরিমিতি (Mensuration)', desc: 'ত্রিভুজ, চতুর্ভুজ ও বৃত্তের ক্ষেত্রফল, ঘনবস্তুর ক্ষেত্রফল ও আয়তন নির্ণয়।', video: 'ftoQ3-KmUaA', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR', practice: { video: 'NkgLHKRmaYM', label: 'Practice (CQ/MCQ/SQ)' } },
-      { n: 15, title: 'পরিসংখ্যান (Statistics)', desc: 'পরিসংখ্যানের ধারণা, গড়, মধ্যমা, প্রচুরক ও তথ্যের লেখচিত্র বিশ্লেষণ।', video: 'SfPmd0Melz8', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR' },
+      { n: 7, title: 'ব্যবহারিক জ্যামিতি', desc: 'জ্যামিতিক সম্পাদ্য — ত্রিভুজ ও চতুর্ভুজ অঙ্কন, কোণ সমদ্বিখণ্ডক ও বিভিন্ন সম্পাদ্য নির্মাণের প্রক্রিয়া।', video: 'i9SYp_WDitU', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR' },
+      { n: 8, title: 'বৃত্ত (Circle)', desc: 'বৃত্তের ধারণা, কেন্দ্র, ব্যাসার্ধ, জ্যা ও বিপণ্য, বৃত্তের স্পর্শক ও বৃত্তীয় উপপাদ্য।', video: 'gmOaOIMcvUo', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR' },
+      { n: 9, title: 'ত্রিকোণমিতি (Trigonometry)', desc: 'ত্রিকোণমিতিক অনুপাত, মান নির্ণয়, ত্রিকোণমিতিক অভেদ ও সূত্রসমূহের প্রয়োগ।', video: 'bF_UbL4HU2M', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR', practice: { video: 'eEb5WYjmAr4', label: 'Practice (CQ/MCQ/SQ)' } },
+      { n: 10, title: 'দূরত্ব ও উচ্চতা (Distance & Elevation)', desc: 'উচ্চতা ও দূরত্ব নির্ণয়ে ত্রিকোণমিতির প্রয়োগ, কোণের মান ও বাস্তব জ্যামিতিক সমস্যা সমাধান।', video: 'bchlwIwsrY4', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR' },
+      { n: 11, title: 'বীজগাণিতিক অনুপাত ও সমানুপাত', desc: 'অনুপাত ও সমানুপাতের ধারণা, বীজগাণিতিক অনুপাতের সূত্র ও বাস্তব সমস্যায় প্রয়োগ।', video: 'M7D6xQv3Wsg', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR' },
+      { n: 12, title: 'দুই চলকবিশিষ্ট সরলরেখা (Calculator Hacks)', desc: 'দুই চলকবিশিষ্ট রৈখিক সমীকরণ ও সরলরেখা, ঢাল, ছেদক ও ক্যালকুলেটর হ্যাক্স সহ দ্রুত সমাধান।', video: 'p9aKNFd4GlE', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR' },
+      { n: 13, title: 'সসীম ধারা (Finite Series)', desc: 'সসীম সমান্তর ও সমগু ধারা, পদ ও সমষ্টি নির্ণয়ের সূত্র ও প্রয়োগ।', video: 'sBvAE8XLKDY', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR' },
+      { n: 14, title: 'ক্ষেত্রফল সংক্রান্ত উপপাদ্য (Theorems on Area)', desc: 'ত্রিভুজ ও চতুর্ভুজের ক্ষেত্রফল সংক্রান্ত উপপাদ্য ও তাদের প্রমাণ ও প্রয়োগ।', video: 'e8EN7OO8tNU', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR' },
+      { n: 15, title: 'পরিমিতি (Mensuration)', desc: 'ত্রিভুজ, চতুর্ভুজ ও বৃত্তের ক্ষেত্রফল, ঘনবস্তুর ক্ষেত্রফল ও আয়তন নির্ণয়।', video: 'ftoQ3-KmUaA', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR', practice: { video: 'NkgLHKRmaYM', label: 'Practice (CQ/MCQ/SQ)' } },
+      { n: 16, title: 'পরিসংখ্যান (Statistics)', desc: 'পরিসংখ্যানের ধারণা, গড়, মধ্যমা, প্রচুরক ও তথ্যের লেখচিত্র বিশ্লেষণ।', video: 'SfPmd0Melz8', list: 'PLsmWY_iJRQwy1DrPA5zTNzRoYIaYLngcR' },
     ],
   },
   {
@@ -155,53 +162,52 @@ export const SUBJECTS = [
     type: 'One-Shot Class',
     icon: '<path d="M3 12h4l3-9 4 18 3-9h4"/>',
     chapters: [
-      { n: 1, title: 'সেট ও ফাংশন', desc: 'সেটের ধারণা, সেট প্রকাশের পদ্ধতি, সেটের সংযোগ ও ছেদ, ফাংশনের গ্রাফ ও ডোমেন-রেঞ্জ।', classes: [
+      { n: 1, title: 'সেট ও ফাংশন (Set and Function)', desc: 'সেটের ধারণা, সেট প্রকাশের পদ্ধতি, সেটের সংযোগ ও ছেদ, ফাংশনের গ্রাফ, ডোমেন ও রেঞ্জ।', classes: [
         { video: 'ZpzXxZrX92Y', list: null, label: 'ক্লাস ১' },
         { video: 'NKVk_xBJSus', list: 'PLsRCKEpC3AekQGhUXlow2yyVYhEOijeAY', label: 'ক্লাস ২' },
         { video: 'c5tFijdDXP4', list: 'PLsRCKEpC3AekQGhUXlow2yyVYhEOijeAY', label: 'ক্লাস ৩' },
       ] },
-      { n: 2, title: 'বীজগাণিতিক রাশির গুণ ও ভাগ', desc: 'বীজগাণিতিক রাশির গুণ, ভাগ, ভাগশেষ উপপাদ্য ও অনুশীলনী সমাধান।', classes: [
+      { n: 2, title: 'বীজগণিতীয় রাশি (Algebraic Expressions)', desc: 'বীজগাণিতিক রাশির গুণ, ভাগ, ভাগশেষ উপপাদ্য, উৎপাদক বিশ্লেষণ ও অনুশীলনী সমাধান।', classes: [
         { video: 'ERVCTT0vYb4', list: null, label: 'ক্লাস ১' },
         { video: 'EluLvCOrAOU', list: null, label: 'ক্লাস ২' },
       ], practice: { video: 'Hd7Qc-JOsnA', label: 'Practice' } },
-      { n: 3, title: 'জ্যামিতি', desc: 'ত্রিভুজের সর্বসমতা, অনুরূপ ত্রিভুজ ও জ্যামিতিক উপপাদ্য ও প্রমাণ।', video: 'oxHvIqlpeEk', list: null },
-      { n: 4, title: 'ত্রিকোণমিতিক অনুপাত', desc: 'ত্রিকোণমিতিক অনুপাত, অভেদ ও সূত্রসমূহের প্রয়োগ ও মান নির্ণয়।', video: 'tIuTXBpIV1E', list: null },
-      { n: 5, title: 'সমতলীয় ভেক্টর', desc: 'ভেক্টরের ধারণা, যোগ ও বিয়োগ, ভেক্টরের উপাংশ, স্কেলার গুণ ও প্রয়োগ।', classes: [
-        { video: 'pOim5St-u54', list: null, label: 'ক্লাস ১' },
-        { video: 'kfjXrH78CgI', list: null, label: 'ক্লাস ২' },
+      { n: 3, title: 'জ্যামিতি (Geometry)', desc: 'ত্রিভুজের সর্বসমতা, অনুরূপ ত্রিভুজ, জ্যামিতিক উপপাদ্য ও প্রমাণ।', video: 'oxHvIqlpeEk', list: null },
+      { n: 4, title: 'জ্যামিতিক অঙ্কন (Geometric Constructions)', desc: 'রুলার ও কম্পাস দিয়ে জ্যামিতিক অঙ্কন, ত্রিভুজ ও চতুর্ভুজ অঙ্কন, কোণ সমদ্বিখণ্ডক ও বিভিন্ন সম্পাদ্য।' },
+      { n: 7, title: 'অসীম ধারা (Infinite Series)', desc: 'অসীম সমান্তর ও গুণোত্তর ধারা, পদ ও সমষ্টি নির্ণয়, ধারার সংকোচন ও সমাধানে।', classes: [
+        { video: '281vRH0hMro', list: null, label: 'ক्लास १' },
+        { video: '9J9F39Xx3vk', list: null, label: 'ক्लास २' },
+        { video: 'F7sg78cwrlk', list: null, label: 'ক्लास ३' },
       ] },
-      { n: 6, title: 'সরলরেখার ঢাল ও সমীকরণ', desc: 'সরলরেখার ঢাল, বিভিন্ন আকারের সমীকরণ, দুই সরলরেখার ছেদক কোণ ও দূরত্ব।', classes: [
-        { video: 'Y2MTUCLtyz8', list: null, label: 'ক্লাস ১' },
-        { video: 'JH-v9_fdZbo', list: null, label: 'ক্লাস ২' },
-        { video: 'dme6hVofi_w', list: null, label: 'ক্লাস ৩' },
-        { video: 'oGQB13M_oWE', list: null, label: 'ক্লাস ৪' },
+      { n: 8, title: 'ত্রিকোণমিতি (Trigonometry)', desc: 'ত্রিকোণমিতিক অনুপাত, অভেদ ও সূত্রসমূহের প্রযোগ, মান নির্ণয় ও সমীকরণ সমাধানে।', video: 'tIuTXBpIV1E', list: null },
+      { n: 9, title: 'সূচকীয় ও লগারিদমীয় ফাংশন (Exponential and Logarithmic Functions)', desc: 'সূচকীয় ফাংশন, লগারিদমের ধারণা ও সূত্র, সূচকীয় ও লগারিদমীয় সমীকরণ সমাধান।', classes: [
+        { video: 'l_qTe1pbU9E', list: null, label: 'ক्लास १' },
+        { video: 'JyI8pGTtonM', list: null, label: 'ক्लास २' },
       ] },
-      { n: 7, title: 'বৃত্ত', desc: 'বৃত্তের সমীকরণ, কেন্দ্র ও ব্যাসার্ধ, স্পর্শক ও বৃত্তীয় সমস্যা সমাধান।', classes: [
-        { video: 'qIDiqdwCHNA', list: null, label: 'ক্লাস ১' },
-        { video: 'Bw2fC_zORmg', list: null, label: 'ক্লাস ২' },
-        { video: 'fbDG-0wq80U', list: null, label: 'ক্লাস ৩' },
-        { video: 'JICgh1dm1Xo', list: null, label: 'ক্লাস ৪' },
+      { n: 10, title: 'দ্বিপদী বিস্তৃতি (Binomial Expansion)', desc: 'দ্বিপদী উপপাদ্য, সাধারণ পদ, মধ্যপদ ও দ্বিপদী বিস্তৃতির প্রযোগে।', classes: [
+        { video: 'cbK5pjili3Q', list: null, label: 'ক्लास १' },
+        { video: 'NCUieanlKHo', list: null, label: 'ক्लास २' },
       ] },
-      { n: 8, title: 'পরিমিতি', desc: 'বিভিন্ন ঘনবস্তুর ক্ষেত্রফল ও আয়তন, গোলক, শঙ্কু ও সিলিন্ডারের পরিমিতি।', classes: [
-        { video: 'r2YiKLSxiQ0', list: null, label: 'ক্লাস ১' },
-        { video: '5CfUT4V0baE', list: null, label: 'ক্লাস ২' },
-        { video: '30RKJelvEKs', list: null, label: 'ক্লাস ৩' },
-        { video: 'hBHk7VjbREE', list: null, label: 'ক্লাস ৪' },
+      { n: 11, title: 'স্থানাঙ্ক জ্যামিতি (Coordinate Geometry)', desc: 'সরলরেখার ঢাল ও সমীকরণ, দুই সরলরেখার ছেদক, বৃত্তের সমীকরণ, স্পর্শক ও স্থানাঙ্ক জ্যামিতিক সমস্যা।', classes: [
+        { video: 'Y2MTUCLtyz8', list: null, label: 'ক्लास १' },
+        { video: 'JH-v9_fdZbo', list: null, label: 'ক्लास २' },
+        { video: 'dme6hVofi_w', list: null, label: 'ক्लास ३' },
+        { video: 'oGQB13M_oWE', list: null, label: 'ক्लास ४' },
+        { video: 'qIDiqdwCHNA', list: null, label: 'ক्लास ५' },
+        { video: 'Bw2fC_zORmg', list: null, label: 'ক्लास ६' },
+        { video: 'fbDG-0wq80U', list: null, label: 'ক्लास ७' },
+        { video: 'JICgh1dm1Xo', list: null, label: 'ক्लास ८' },
       ] },
-      { n: 9, title: 'সম্ভাবনা', desc: 'সম্ভাবনার ধারণা, বিভিন্ন সম্ভাবনার সূত্র, নমুনা স্থান ও সম্ভাবনার প্রয়োগ।', video: 'xmxfGhzHaIA', list: null },
-      { n: 10, title: 'সসীম ধারা', desc: 'সমান্তর ও সমগু ধারা, পদ ও সমষ্টি নির্ণয়, ধারার সংযোজন ও সমাধান।', classes: [
-        { video: '281vRH0hMro', list: null, label: 'ক্লাস ১' },
-        { video: '9J9F39Xx3vk', list: null, label: 'ক্লাস ২' },
-        { video: 'F7sg78cwrlk', list: null, label: 'ক্লাস ৩' },
+      { n: 12, title: 'সমতলীয় ভেক্টর (Plane Vectors)', desc: 'ভেক্টরের ধারণা, যোগ ও বিয়োগ, ভেক্টরের উপাংশ, স্কেলার গুণ ও প্রয়োগ।', classes: [
+        { video: 'pOim5St-u54', list: null, label: 'ক्लास १' },
+        { video: 'kfjXrH78CgI', list: null, label: 'ক्लास २' },
       ] },
-      { n: 11, title: 'বীজগাণিতিক অনুপাত ও সমানুপাত', desc: 'অনুপাত ও সমানুপাতের সূত্র, ক্রমিক অনুপাত ও বাস্তব সমস্যায় প্রয়োগ।', classes: [
-        { video: 'l_qTe1pbU9E', list: null, label: 'ক্লাস ১' },
-        { video: 'JyI8pGTtonM', list: null, label: 'ক্লাস ২' },
+      { n: 13, title: 'ঘনজ্যামিতি (Solid Geometry)', desc: 'বিভিন্ন ঘনবস্তুর ক্ষেত্রফল ও আয়তন, গোলক, শঙ্কু, সিলিন্ডার ও ঘনজ্যামিতিক সমস্যা সমাধানে।', classes: [
+        { video: 'r2YiKLSxiQ0', list: null, label: 'ক्लास १' },
+        { video: '5CfUT4V0baE', list: null, label: 'ক्लास २' },
+        { video: '30RKJelvEKs', list: null, label: 'ক्लास ३' },
+        { video: 'hBHk7VjbREE', list: null, label: 'ক्लास ४' },
       ] },
-      { n: 12, title: 'কম্পাঙ্ক বিভাজক', desc: 'কম্পাঙ্ক বিভাজকের ধারণা, মান নির্ণয় ও সম্পর্কিত সমস্যা সমাধান।', classes: [
-        { video: 'cbK5pjili3Q', list: null, label: 'ক্লাস ১' },
-        { video: 'NCUieanlKHo', list: null, label: 'ক্লাস ২' },
-      ] },
+      { n: 14, title: 'সম্ভাবনা (Probability)', desc: 'সম্ভাবনার ধারণা, নমুনা স্থান, সম্ভাবনার সূত্র ও বাস্তব সমস্যায় প্রযোগে।', video: 'xmxfGhzHaIA', list: null },
     ],
   },
 ];
@@ -221,12 +227,14 @@ export function getChapterByN(key, n) {
 /* Normalizer: returns an array of {video, list, label} for any chapter.
    Supports the new `classes:[...]` format and the legacy `video`+`practice` format. */
 export function getClasses(ch) {
-  if (ch.classes && ch.classes.length) {
-    return ch.classes.map((c) => ({ video: c.video, list: c.list, label: c.label || 'ক্লাস' }));
+  const norm = (c) => ({ video: c.video, list: c.list ?? null, label: c.label || 'ক্লাস' });
+  if (ch.classes?.length) return ch.classes.map(norm).filter(c => c.video);
+  if (ch.video) {
+    const list = [{ video: ch.video, list: ch.list ?? null, label: 'ক্লাস' }];
+    if (ch.practice?.video) list.push({ video: ch.practice.video, list: ch.list ?? null, label: ch.practice.label || 'Practice' });
+    return list;
   }
-  const list = [{ video: ch.video, list: ch.list, label: 'ক্লাস' }];
-  if (ch.practice) list.push({ video: ch.practice.video, list: ch.list, label: ch.practice.label || 'Practice' });
-  return list;
+  return [];
 }
 
 export const subjectUrl = (key) => `#/${key}`;

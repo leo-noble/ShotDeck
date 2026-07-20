@@ -5,7 +5,7 @@
      playback keeps working while online — this never blocks video)
    - Navigation requests always try the network first, so the page is never stuck blank
 */
-const VERSION = 'v2';
+const VERSION = 'v4';
 const SHELL_CACHE = `shotdeck-shell-${VERSION}`;
 const RUNTIME_CACHE = `shotdeck-runtime-${VERSION}`;
 
